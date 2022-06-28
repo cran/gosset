@@ -108,13 +108,15 @@ worth_map.default <- function(object, ...) {
 #' @export
 worth_map.list <- function(object, labels, ...) {
   
-  winprobs <- .combine_coeffs(object, log = TRUE, vcov = FALSE)
+  winprobs <- .combine_coeffs(object, log = TRUE, vcov = FALSE, ...)
   
   # add name of features
   names(winprobs) <- labels
   
-  winprobs <- data.frame(items = rep(dimnames(winprobs)[[1]], times = ncol(winprobs)),
-                         labels = rep(dimnames(winprobs)[[2]], each = nrow(winprobs)),
+  winprobs <- data.frame(items = rep(dimnames(winprobs)[[1]], 
+                                     times = ncol(winprobs)),
+                         labels = rep(dimnames(winprobs)[[2]], 
+                                      each = nrow(winprobs)),
                          winprob = as.numeric(unlist(winprobs)))
   
   winprobs$labels <- factor(winprobs$labels, levels = labels)
@@ -135,19 +137,22 @@ worth_map.list <- function(object, labels, ...) {
                   fill = winprob,
                   label = as.character(round(winprob, 2)))) +
     ggplot2::geom_tile() + 
-    ggplot2::scale_fill_distiller(palette = "RdBu", limit = lims,
+    ggplot2::scale_fill_distiller(palette = "RdBu", 
+                                  limit = lims,
                                   direction = 1,
-                                  na.value = "white") +
+                                  na.value = "white",
+                                  name = "") +
     ggplot2::theme_bw() +
-    ggplot2::theme(plot.background = ggplot2::element_blank(),
-          axis.text = ggplot2::element_text(color = "grey20"),
+    theme(axis.text = ggplot2::element_text(color = "grey20"),
           strip.text.x = ggplot2::element_text(color = "grey20"),
-          axis.text.x = ggplot2::element_text(angle = 40, vjust = 1, hjust=1),
-          axis.text.y = ggplot2::element_text(angle = angle, vjust = 1, hjust=1),
-          panel.grid = ggplot2::element_blank()) +
+          axis.text.x = ggplot2::element_text(angle = 40, vjust = 1, hjust = 1),
+          axis.text.y = ggplot2::element_text(angle = angle, vjust = 1, hjust = 1),
+          panel.grid = ggplot2::element_blank())
     ggplot2::labs(x = "", 
                   y = "",
                   fill = "")
+  
+  
   
   return(p)
   

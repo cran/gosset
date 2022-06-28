@@ -1,17 +1,23 @@
-gosset 0.2.6
+gosset 0.4 (2022-06-30)
 =========================
 
-### Improvements
+### IMPROVEMENTS
 
-* `forward()` and `crossvalidation()` deals with caret list folds
-* `plot()` method in `summarise_agreement()` deals with negative values
-* `rank_tricot()` now handles with ties which a assigned in position 2
+* Add new functions `reliability()`, `btpermute()`, `pseudo_rank()`, `kendallW()`
+* Split `plot.pltree()` to build branches and panels independently
+
+
+gosset 0.3 (2022-03-08)
+=========================
+
+First version on CRAN 
 
 
 gosset 0.2.5.9000 (2020-09-16)
 =========================
 
 ### IMPROVEMENTS
+
 * add argument qve to skip quasi-variance to plot coefficients in `plot_tree()`
 * `rank_numeric()` deals with ids of class characters
 * argument `ref` can be used in `multicompPL()` to select the reference item
