@@ -9,11 +9,11 @@
 \alias{kendallTau.paircomp}
 \title{Kendall rank correlation coefficient}
 \usage{
-kendallTau(x, y, null.rm = TRUE, ...)
+kendallTau(x, y, null.rm = TRUE, average = TRUE, na.omit = FALSE, ...)
 
 \method{kendallTau}{default}(x, y, null.rm = TRUE, ...)
 
-\method{kendallTau}{matrix}(x, y, ...)
+\method{kendallTau}{matrix}(x, y, null.rm = TRUE, average = TRUE, na.omit = FALSE, ...)
 
 \method{kendallTau}{rankings}(x, y, ...)
 
@@ -27,6 +27,10 @@ kendallTau(x, y, null.rm = TRUE, ...)
 \item{y}{a vector, matrix or data frame with compatible dimensions to \code{x}}
 
 \item{null.rm}{logical, to remove zeros from \code{x} and \code{y}}
+
+\item{average}{logical, if \code{FALSE} returns the kendall and N-effective for each entry}
+
+\item{na.omit}{logical, if \code{TRUE} ignores entries with kendall = NA when computing the average}
 
 \item{...}{further arguments affecting the Kendall tau produced. See details}
 }
@@ -46,27 +50,56 @@ into ranks (from the higher being the first and negative being the last)
 and the possibility to remove zeros from incomplete ranks
 }
 \examples{
-library("PlackettLuce")
 
-R <- matrix(c(1, 2, 4, 3,
+# Vector based example same as stats::cor(x, y, method = "kendall")
+# but showing N-effective
+x = c(1, 2, 3, 4, 5)
+
+y = c(1, 1, 3, 2, NA)
+
+w = c(1, 1, 3, 2, 5)
+
+kendallTau(x, y)
+
+kendallTau(x, w)
+
+# Matrix and PlacketLuce ranking example 
+
+library("PlackettLuce")
+ 
+R = matrix(c(1, 2, 4, 3,
+             1, 4, 2, 3,
+             1, 2, NA, 3,
+             1, 2, 4, 3,
+             1, 3, 4, 2,
+             1, 4, 3, 2), nrow = 6, byrow = TRUE)
+colnames(R) = LETTERS[1:4]
+
+G = group(as.rankings(R), 1:6)
+
+mod = pltree(G ~ 1, data = G)
+
+preds = predict(mod)
+
+kendallTau(R, preds)
+
+# Also returns raw values (no average) 
+
+kendallTau(R, preds, average = FALSE)
+
+# Choose to ignore entries with NA
+R2 = matrix(c(1, 2, 4, 3,
               1, 4, 2, 3,
-              1, 2, 4, 3,
+              NA, NA, NA, NA,
               1, 2, 4, 3,
               1, 3, 4, 2,
               1, 4, 3, 2), nrow = 6, byrow = TRUE)
-colnames(R) <- LETTERS[1:4]
 
-G <- group(as.rankings(R), 1:6)
+kendallTau(R, R2, average = FALSE)
 
-mod <- pltree(G ~ 1, data = G)
+kendallTau(R, R2, average = TRUE)
 
-preds <- predict(mod)
-
-k <- kendallTau(R, preds)
-
-# also applies to a single observation in the matrix
-
-k <- kendallTau(R[1,], preds[1,])
+kendallTau(R, R2, average = TRUE, na.omit = TRUE)
 
 }
 \references{
